@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "TODO's",
+          "Digital Bell",
           style: MyText.MyText1,
         ),
         centerTitle: true,
@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Container(
               child: Text(
-                "Today's Task",
+                "Upcoming Bell",
                 style: MyText.MyText2,
               ),
             ),
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Column(
               children: taskProvider.tasks.map((task) {
                 return Dismissible(
-                  key: Key(task.taskName),
+                  key: Key(task.bellName),
                   onDismissed: (direction) {
                     // Remove the task from the provider when dismissed
                     taskProvider.removeTask(task);
@@ -104,16 +104,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    task.taskName,
+                                    task.bellName,
                                     style: TextStyle(fontSize: 15.sp),
                                   ),
-                                  Text(
-                                    task.description,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 10.sp, color: Colors.grey),
-                                  )
+                                  for (int i = 0;
+                                      i < task.selectedDays.length;
+                                      i++)
+                                    Text(
+                                      task.selectedDays[i],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 10.sp, color: Colors.grey),
+                                    )
                                 ],
                               ),
                             ),

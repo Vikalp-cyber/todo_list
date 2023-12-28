@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 // import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
@@ -24,8 +25,8 @@ class _CreateNewTaskState extends State<CreateNewTask> {
   TimeOfDay? selectedTime; // Make it nullable
   TextEditingController tasknameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  
- 
+  // List<bool> selectedDays = List.generate(7, (index) => false);
+  List<String> selectedDays = [];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -59,24 +60,27 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     final TaskProvider taskProvider =
         Provider.of<TaskProvider>(context, listen: false);
     DateTime combinedDateTime = DateTime(
-    selectedDate.year,
-    selectedDate.month,
-    selectedDate.day,
-    selectedTime?.hour ?? 0,
-    selectedTime?.minute ?? 0,
-  );
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedTime?.hour ?? 0,
+      selectedTime?.minute ?? 0,
+    );
 
     Task newTask = Task(
-      taskName: tasknameController.text,
+      bellName: tasknameController.text,
       date: selectedDate,
       time: selectedTime ?? TimeOfDay.now(),
       description: descriptionController.text,
+      selectedDays: selectedDays,
     );
     taskProvider.addTask(newTask);
     print(newTask);
-    NotificationService().scheduleNotification(title: 'Scheduled Notification',
-            body: '$combinedDateTime',scheduledNotificationDateTime: combinedDateTime);
-    
+    NotificationService().scheduleNotification(
+        title: 'Scheduled Notification',
+        body: '$combinedDateTime',
+        scheduledNotificationDateTime: combinedDateTime);
+
     Navigator.pop(context);
   }
 
@@ -102,44 +106,44 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                     width: MediaQuery.of(context).size.width / 7,
                   ),
                   Text(
-                    "Create New Task",
+                    "Digital Bell System",
                     style: MyText.MyText2,
                   ),
                 ],
               ),
-              Heading("Task Name"),
-              CustomTextField("Task Name", tasknameController),
-              Heading("Date & Time"),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 7.h,
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 3.w),
-                        child: Text(
-                          DateFormat('dd MMMM yyyy').format(
-                            selectedDate.toLocal(),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                          onPressed: () => _selectDate(context),
-                          icon: const Icon(
-                            Icons.calendar_today_rounded,
-                            color: Colors.blue,
-                          ))
-                    ],
-                  ),
-                ),
-              ),
+              Heading("Bell Name"),
+              CustomTextField("Bell Name", tasknameController),
+              Heading("Select Time"),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Container(
+              //     width: double.infinity,
+              //     height: 7.h,
+              //     decoration: BoxDecoration(
+              //       border: Border.all(),
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Container(
+              //           margin: EdgeInsets.only(left: 3.w),
+              //           child: Text(
+              //             DateFormat('dd MMMM yyyy').format(
+              //               selectedDate.toLocal(),
+              //             ),
+              //           ),
+              //         ),
+              //         IconButton(
+              //             onPressed: () => _selectDate(context),
+              //             icon: const Icon(
+              //               Icons.calendar_today_rounded,
+              //               color: Colors.blue,
+              //             ))
+              //       ],
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -167,24 +171,44 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                   ),
                 ),
               ),
-              Heading("Description"),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  child: TextField(
-                    controller: descriptionController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: "Description of the task....",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+              Heading("Select Days"),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  for (int i = 0; i < 7; i++)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          DateFormat('EEEE').format(
+                              DateTime(2023, 1, 1).add(Duration(days: i))),
+                        ),
+                        Switch(
+                          value: selectedDays.contains(
+                              DateFormat('EEEE')
+                                  .format(DateTime(2023, 1, 1)
+                                      .add(Duration(days: i)))),
+                          onChanged: (value) {
+                            setState(() {
+                              if (value) {
+                                selectedDays.add(DateFormat('EEEE').format(
+                                    DateTime(2023, 1, 1)
+                                        .add(Duration(days: i))));
+                              } else {
+                                selectedDays.remove(DateFormat('EEEE').format(
+                                    DateTime(2023, 1, 1)
+                                        .add(Duration(days: i))));
+                              }
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                ),
+                ],
               ),
+
               Container(
-                margin: EdgeInsets.only(top: 3.h),
+                margin: EdgeInsets.only(top: 3.h, bottom: 3.h),
                 width: double.infinity,
                 height: 7.h,
                 child: ElevatedButton(

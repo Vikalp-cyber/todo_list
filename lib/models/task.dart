@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
 
 class Task {
-  final String taskName;
+  final String bellName;
   final DateTime date;
   final TimeOfDay time;
   final String description;
+  List<String> selectedDays;
   bool completed;
 
   Task({
-    required this.taskName,
+    required this.bellName,
     required this.date,
     required this.time,
     required this.description,
     this.completed = false,
+    required this.selectedDays,
   });
 
   Task copyWith({
-    String? taskName,
+    String? bellName,
     DateTime? date,
     TimeOfDay? time,
     String? description,
     bool? completed,
   }) {
     return Task(
-      taskName: taskName ?? this.taskName,
+      bellName: bellName ?? this.bellName,
       date: date ?? this.date,
       time: time ?? this.time,
       description: description ?? this.description,
       completed: completed ?? this.completed,
+      selectedDays: selectedDays 
     );
   }
 
   @override
   String toString() {
-    return "$taskName , $date , $time , $description";
+    return "$bellName , $date , $time , $description";
   }
 }
