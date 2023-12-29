@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+part 'task.g.dart';
 
-class Task {
+
+@HiveType(typeId: 0)
+class Task extends HiveObject{
+
+  @HiveField(0)
   final String bellName;
+
+  @HiveField(1)
   final DateTime date;
+
+  @HiveField(2)
   final TimeOfDay time;
+
+  @HiveField(3)
   final String description;
+
+  @HiveField(4)
   List<String> selectedDays;
+
+  @HiveField(5)
   bool completed;
 
   Task({
@@ -34,6 +50,8 @@ class Task {
     );
   }
 
+
+  
   @override
   String toString() {
     return "$bellName , $date , $time , $description";

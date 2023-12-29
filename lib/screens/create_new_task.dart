@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import 'package:todo_list/models/task.dart';
+import 'package:todo_list/models/task_model.dart';
 import 'package:todo_list/provider/taskProvider.dart';
+import 'package:todo_list/services/database.dart';
 import 'package:todo_list/services/notifi.dart';
 import 'package:todo_list/utils/textstyle.dart';
 import 'package:todo_list/widgets/custom_heading.dart';
@@ -56,7 +58,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     }
   }
 
-  void submitTask(BuildContext context) {
+  Future<void> submitTask(BuildContext context) async {
     final TaskProvider taskProvider =
         Provider.of<TaskProvider>(context, listen: false);
     DateTime combinedDateTime = DateTime(
@@ -76,10 +78,13 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     );
     taskProvider.addTask(newTask);
     print(newTask);
-    NotificationService().scheduleNotification(
-        title: 'Scheduled Notification',
-        body: '$combinedDateTime',
-        scheduledNotificationDateTime: combinedDateTime);
+   
+    await DatabaseHelper.insertTask(newTask);
+  // newTask.id = taskId;
+    // NotificationService().scheduleNotification(
+    //     title: 'Scheduled Notification',
+    //     body: '$combinedDateTime',
+    //     scheduledNotificationDateTime: combinedDateTime);
 
     Navigator.pop(context);
   }
